@@ -32,13 +32,15 @@
   --ink-faint:  #8d8b84;
   --line:       rgba(21,21,21,.16);
 
-  --rail:       #0d0d0e;
-  --rail-ink:   #f4f3ee;
-  --rail-soft:  #9b9a94;
-  --rail-line:  rgba(244,243,238,.15);
+  --rail:       #eae8e1;
+  --rail-2:     #e0ddd5;
+  --rail-ink:   #151515;
+  --rail-soft:  #5a5954;
+  --rail-line:  rgba(21,21,21,.14);
+  --rail-dash:  rgba(21,21,21,.28);
 
-  --accent:     #c0442a;
-  --accent-rail:#e0603f;
+  --accent:     #1a5fd0;
+  --accent-rail:#1a5fd0;
 
   --grain:      .06;
 
@@ -60,12 +62,14 @@
   --line:       rgba(241,239,233,.16);
 
   --rail:       #000000;
+  --rail-2:     #121213;
   --rail-ink:   #f1efe9;
   --rail-soft:  #8e8d87;
   --rail-line:  rgba(241,239,233,.14);
+  --rail-dash:  rgba(241,239,233,.3);
 
-  --accent:     #e0603f;
-  --accent-rail:#e0603f;
+  --accent:     #6aa6ff;
+  --accent-rail:#6aa6ff;
 
   --grain:      .08;
 }
@@ -80,11 +84,13 @@
     --ink-faint:  #6d6b66;
     --line:       rgba(241,239,233,.16);
     --rail:       #000000;
+    --rail-2:     #121213;
     --rail-ink:   #f1efe9;
     --rail-soft:  #8e8d87;
     --rail-line:  rgba(241,239,233,.14);
-    --accent:     #e0603f;
-    --accent-rail:#e0603f;
+    --rail-dash:  rgba(241,239,233,.3);
+    --accent:     #6aa6ff;
+    --accent-rail:#6aa6ff;
     --grain:      .08;
   }
 }
@@ -209,19 +215,27 @@ body::after {
 .bio b { color:var(--ink); font-weight:500; }
 .bio .c { color:var(--accent); font-weight:500; }
 
-.talk {
-  margin-top:clamp(1rem,2.4vh,1.6rem);
-  font-size:clamp(.86rem,2.35cqw,1rem);
-  line-height:1.6;
-  color:var(--ink-soft);
+.contacts {
+  margin-top:clamp(1.2rem,2.8vh,1.9rem);
+  display:flex;
+  flex-wrap:wrap;
+  gap:.9rem 2.2rem;
 }
-.talk a {
-  color:var(--accent);
+.contacts a {
+  display:grid;
+  gap:.3rem;
+  font-size:clamp(.86rem,2.35cqw,1rem);
   font-weight:500;
+  color:var(--accent);
+}
+.contacts a .mono { color:var(--ink-faint); transition:color .18s; }
+.contacts a u {
+  text-decoration:none;
   border-bottom:1px solid transparent;
   transition:border-color .2s;
 }
-.talk a:hover { border-bottom-color:var(--accent); }
+.contacts a:hover u { border-bottom-color:var(--accent); }
+.contacts a:hover .mono { color:var(--ink-soft); }
 
 /* index of folders */
 .index {
@@ -257,8 +271,6 @@ body::after {
   align-items:center;
   color:var(--ink-faint);
 }
-.panel__foot a { transition:color .18s; }
-.panel__foot a:hover { color:var(--accent); }
 
 /* ============================================================
    RIGHT RAIL
@@ -334,7 +346,7 @@ body::after {
   scroll-snap-align:start;
   position:relative;
   overflow:hidden;
-  background:var(--paper-2);
+  background:var(--rail-2);
 }
 .shot img {
   width:100%; height:100%;
@@ -344,7 +356,7 @@ body::after {
 .strip--empty .shot { flex-basis:100%; }
 .shot--empty {
   background:none;
-  border:1px dashed rgba(244,243,238,.3);
+  border:1px dashed var(--rail-dash);
   display:grid;
   place-content:center;
   gap:.55rem;
@@ -454,15 +466,16 @@ body::after {
       <p class="bio">I also build <b>AI-generated stills and video</b> for brands that need the picture before the shoot exists.</p>
       <p class="bio">Selected clients: <span class="c">Ekonika</span>, <span class="c">Bask</span>, <span class="c">Ferrino</span>, <span class="c">Whitelab</span>, <span class="c">Xvoya</span>, <span class="c">Joint Snowboards</span>, <span class="c">Dva Myacha</span> and others.</p>
 
-      <p class="talk">Have a shoot in mind? <a href="https://t.me/myfoxplay" target="_blank" rel="noopener">Let's talk.</a></p>
+      <div class="contacts">
+        <a href="https://t.me/myfoxplay" target="_blank" rel="noopener"><span class="mono">Telegram</span><u>t.me/myfoxplay</u></a>
+        <a href="https://instagram.com/myfoxplay" target="_blank" rel="noopener"><span class="mono">Instagram</span><u>instagram.com/myfoxplay</u></a>
+      </div>
     </div>
 
     <nav class="index" id="index" aria-label="Projects"></nav>
 
     <div class="panel__foot mono">
       <span>&copy; 2026 myfoxplay</span>
-      <a href="https://t.me/myfoxplay" target="_blank" rel="noopener">Telegram</a>
-      <a href="https://instagram.com/myfoxplay" target="_blank" rel="noopener">Instagram</a>
     </div>
   </aside>
 
