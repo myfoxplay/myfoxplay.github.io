@@ -7,9 +7,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>myfoxplay — Retouch &amp; AI</title>
-<meta name="description" content="Retoucher and AI creator. Fashion, editorial and campaign imagery, plus AI-generated stills and video for brands." />
+<meta name="description" content="myfoxplay — retouch &amp; AI for brands." />
 <meta property="og:title" content="myfoxplay — Retouch &amp; AI" />
-<meta property="og:description" content="Retoucher and AI creator. Fashion, editorial and campaign imagery, plus AI-generated stills and video for brands." />
+<meta property="og:description" content="myfoxplay — retouch &amp; AI for brands." />
 <meta property="og:type" content="website" />
 <meta property="og:image" content="assets/retouch/retouch-03.jpg" />
 
@@ -211,31 +211,32 @@ body::after {
   color:var(--ink-soft);
   max-width:46ch;
 }
-.bio + .bio { margin-top:.8rem; }
-.bio b { color:var(--ink); font-weight:500; }
 .bio .c { color:var(--accent); font-weight:500; }
 
 .contacts {
-  margin-top:clamp(1.2rem,2.8vh,1.9rem);
+  margin-top:clamp(1.3rem,3vh,2rem);
   display:flex;
   flex-wrap:wrap;
-  gap:.9rem 2.2rem;
+  gap:.6rem;
 }
-.contacts a {
-  display:grid;
-  gap:.3rem;
-  font-size:clamp(.86rem,2.35cqw,1rem);
-  font-weight:500;
-  color:var(--accent);
+.btn {
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  padding:.78rem 1.2rem;
+  border:1px solid var(--ink);
+  font-family:var(--font-mono);
+  font-size:.7rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink);
+  transition:background-color .25s, border-color .25s, color .25s;
 }
-.contacts a .mono { color:var(--ink-faint); transition:color .18s; }
-.contacts a u {
-  text-decoration:none;
-  border-bottom:1px solid transparent;
-  transition:border-color .2s;
+.btn:hover {
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--paper);
 }
-.contacts a:hover u { border-bottom-color:var(--accent); }
-.contacts a:hover .mono { color:var(--ink-soft); }
 
 /* index of folders */
 .index {
@@ -437,7 +438,22 @@ body::after {
   }
   .slide__title, .strip, .slide__foot { opacity:1; transform:none; }
   .shot { flex-basis:88%; }
-  .hint { display:none; }
+}
+
+/* ============================================================
+   THEME SWITCH — crossfade the whole page (View Transitions),
+   with a colour-transition fallback for browsers without it
+   ============================================================ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration:.7s;
+  animation-timing-function:var(--ease);
+}
+html.theme-fade,
+html.theme-fade *,
+html.theme-fade *::after {
+  transition:background-color .7s var(--ease), color .7s var(--ease),
+             border-color .7s var(--ease), opacity .7s var(--ease) !important;
 }
 
 @media (prefers-reduced-motion:reduce) {
@@ -460,15 +476,13 @@ body::after {
 
     <div class="panel__body">
       <h1 class="wordmark">myfoxplay</h1>
-      <p class="tagline">Retoucher &amp; AI creator</p>
+      <p class="tagline">Retouch &amp; AI for brands</p>
 
-      <p class="bio">I work on <b>fashion, editorial and campaign imagery</b> — skin, colour, fabric, compositing, clean-up. Everything that has to look untouched.</p>
-      <p class="bio">I also build <b>AI-generated stills and video</b> for brands that need the picture before the shoot exists.</p>
       <p class="bio">Selected clients: <span class="c">Ekonika</span>, <span class="c">Bask</span>, <span class="c">Ferrino</span>, <span class="c">Whitelab</span>, <span class="c">Xvoya</span>, <span class="c">Joint Snowboards</span>, <span class="c">Dva Myacha</span> and others.</p>
 
       <div class="contacts">
-        <a href="https://t.me/myfoxplay" target="_blank" rel="noopener"><span class="mono">Telegram</span><u>t.me/myfoxplay</u></a>
-        <a href="https://instagram.com/myfoxplay" target="_blank" rel="noopener"><span class="mono">Instagram</span><u>instagram.com/myfoxplay</u></a>
+        <a class="btn" href="https://t.me/myfoxplay" target="_blank" rel="noopener">Telegram <span aria-hidden="true">&#8599;</span></a>
+        <a class="btn" href="https://instagram.com/myfoxplay" target="_blank" rel="noopener">Instagram <span aria-hidden="true">&#8599;</span></a>
       </div>
     </div>
 
@@ -676,11 +690,22 @@ var PROJECTS = [
   function paintLabel() {
     label.textContent = currentTheme() === 'dark' ? 'Light' : 'Dark';
   }
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem('mfp-theme', t); } catch (e) {}
+    paintLabel();
+  }
   document.getElementById('themeBtn').addEventListener('click', function () {
     var nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', nextTheme);
-    try { localStorage.setItem('mfp-theme', nextTheme); } catch (e) {}
-    paintLabel();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      applyTheme(nextTheme);
+    } else if (document.startViewTransition) {
+      document.startViewTransition(function () { applyTheme(nextTheme); });
+    } else {
+      root.classList.add('theme-fade');
+      applyTheme(nextTheme);
+      window.setTimeout(function () { root.classList.remove('theme-fade'); }, 750);
+    }
   });
   paintLabel();
 })();
