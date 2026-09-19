@@ -11,7 +11,7 @@
 <meta property="og:title" content="myfoxplay — Retouch &amp; AI" />
 <meta property="og:description" content="myfoxplay — retouch &amp; AI for brands." />
 <meta property="og:type" content="website" />
-<meta property="og:image" content="assets/retouch/retouch-03.jpg" />
+<meta property="og:image" content="assets/projects/the-voice-x-element47/01.jpg" />
 
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
 <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800,900&f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
@@ -243,7 +243,8 @@ body::after {
   margin-top:auto;
   padding-top:clamp(1.4rem,4vh,2.6rem);
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));
+  align-items:start;
   gap:.1rem 1.2rem;
 }
 .index__item {
@@ -255,9 +256,7 @@ body::after {
   text-align:left;
   padding:.34rem 0;
   transition:color .18s;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  line-height:1.35;
 }
 .index__item:hover { color:var(--ink); }
 .index__item[aria-current="true"] { color:var(--accent); }
@@ -307,7 +306,14 @@ body::after {
   color:var(--rail-soft);
 }
 .slide__num { color:var(--accent-rail); }
-.slide__kind { margin-left:auto; }
+.slide__kind {
+  color:var(--rail-ink);
+  border:1px solid var(--rail-line);
+  padding:.28rem .5rem .24rem;
+}
+.slide__year { margin-left:auto; }
+
+.index__kind { opacity:.6; margin-left:.5em; }
 
 .slide__title {
   font-family:var(--font-display);
@@ -341,9 +347,12 @@ body::after {
 .strip::-webkit-scrollbar { display:none; }
 .slide.is-active .strip { opacity:1; transform:none; }
 
+/* each shot is full strip height at the photo's own proportions — never
+   cropped. 3:4 is only a placeholder until the image reports its size. */
 .shot {
-  flex:0 0 86%;
+  flex:0 0 auto;
   height:100%;
+  aspect-ratio:3 / 4;
   scroll-snap-align:start;
   position:relative;
   overflow:hidden;
@@ -354,7 +363,7 @@ body::after {
   object-fit:cover;
 }
 /* an empty folder gets the full strip width — no dangling gap */
-.strip--empty .shot { flex-basis:100%; }
+.strip--empty .shot { flex:1 0 100%; aspect-ratio:auto; }
 .shot--empty {
   background:none;
   border:1px dashed var(--rail-dash);
@@ -433,11 +442,12 @@ body::after {
   }
   .slide {
     height:auto;
-    min-height:78vh;
-    grid-template-rows:auto auto minmax(52vh,1fr) auto;
+    grid-template-rows:auto auto auto auto;
   }
   .slide__title, .strip, .slide__foot { opacity:1; transform:none; }
-  .shot { flex-basis:88%; }
+  /* on a phone the width drives the size, so a shot never overflows */
+  .shot { height:auto; width:82vw; }
+  .strip--empty .shot { width:auto; min-height:52vh; }
 }
 
 /* ============================================================
@@ -507,20 +517,53 @@ html.theme-fade *::after {
    year   : small label, leave "" to hide
    note   : one line under the gallery, leave "" to hide
    images : array of paths, e.g.
-            ["assets/projects/ekonika/01.jpg", "assets/projects/ekonika/02.jpg"]
+            ["assets/projects/bask/01.jpg", "assets/projects/bask/02.jpg"]
             leave [] and the folder shows an empty placeholder
    ============================================================ */
 var PROJECTS = [
-  { name:"Ekonika",          kind:"Retouch",  year:"", note:"", images:[] },
-  { name:"Bask",             kind:"Retouch",  year:"", note:"", images:[] },
-  { name:"Ferrino",          kind:"Retouch",  year:"", note:"", images:[] },
-  { name:"Whitelab",         kind:"Retouch",  year:"", note:"", images:[] },
-  { name:"Xvoya",            kind:"AI",       year:"", note:"", images:[] },
-  { name:"Joint Snowboards", kind:"Retouch",  year:"", note:"", images:[] },
-  { name:"Dva Myacha",       kind:"Retouch",  year:"", note:"", images:[] },
-  { name:"Project 08",       kind:"AI",       year:"", note:"", images:[] },
-  { name:"Project 09",       kind:"Retouch",  year:"", note:"", images:[] },
-  { name:"Project 10",       kind:"AI Video", year:"", note:"", images:[] }
+  { name:"The VOICE x ELEMENT47", kind:"Retouch", year:"", note:"",
+    images:[
+      "assets/projects/the-voice-x-element47/01.jpg", "assets/projects/the-voice-x-element47/02.jpg", "assets/projects/the-voice-x-element47/03.jpg",
+      "assets/projects/the-voice-x-element47/04.jpg", "assets/projects/the-voice-x-element47/05.jpg", "assets/projects/the-voice-x-element47/06.jpg",
+      "assets/projects/the-voice-x-element47/07.jpg", "assets/projects/the-voice-x-element47/08.jpg", "assets/projects/the-voice-x-element47/09.jpg",
+      "assets/projects/the-voice-x-element47/10.jpg", "assets/projects/the-voice-x-element47/11.jpg"
+    ] },
+  { name:"Joint x XVOYA", kind:"AI", year:"", note:"",
+    images:[
+      "assets/projects/joint-x-xvoya/01.jpg", "assets/projects/joint-x-xvoya/02.jpg", "assets/projects/joint-x-xvoya/03.jpg",
+      "assets/projects/joint-x-xvoya/04.jpg", "assets/projects/joint-x-xvoya/05.jpg", "assets/projects/joint-x-xvoya/06.jpg",
+      "assets/projects/joint-x-xvoya/07.jpg", "assets/projects/joint-x-xvoya/08.jpg", "assets/projects/joint-x-xvoya/09.jpg",
+      "assets/projects/joint-x-xvoya/10.jpg", "assets/projects/joint-x-xvoya/11.jpg"
+    ] },
+  { name:"Bask", kind:"AI", year:"", note:"",
+    images:[
+      "assets/projects/bask/01.jpg", "assets/projects/bask/02.jpg", "assets/projects/bask/03.jpg",
+      "assets/projects/bask/04.jpg", "assets/projects/bask/05.jpg"
+    ] },
+  { name:"Dva Myacha", kind:"AI", year:"", note:"",
+    images:[
+      "assets/projects/dva-myacha/01.jpg", "assets/projects/dva-myacha/02.jpg", "assets/projects/dva-myacha/03.jpg",
+      "assets/projects/dva-myacha/04.jpg"
+    ] },
+  { name:"Freestyle Retouch", kind:"Retouch", year:"", note:"",
+    images:[
+      "assets/projects/freestyle-retouch/01.jpg", "assets/projects/freestyle-retouch/02.jpg", "assets/projects/freestyle-retouch/03.jpg",
+      "assets/projects/freestyle-retouch/04.jpg", "assets/projects/freestyle-retouch/05.jpg", "assets/projects/freestyle-retouch/06.jpg",
+      "assets/projects/freestyle-retouch/07.jpg", "assets/projects/freestyle-retouch/08.jpg", "assets/projects/freestyle-retouch/09.jpg",
+      "assets/projects/freestyle-retouch/10.jpg", "assets/projects/freestyle-retouch/11.jpg", "assets/projects/freestyle-retouch/12.jpg",
+      "assets/projects/freestyle-retouch/13.jpg", "assets/projects/freestyle-retouch/14.jpg", "assets/projects/freestyle-retouch/15.jpg",
+      "assets/projects/freestyle-retouch/16.jpg", "assets/projects/freestyle-retouch/17.jpg", "assets/projects/freestyle-retouch/18.jpg",
+      "assets/projects/freestyle-retouch/19.jpg", "assets/projects/freestyle-retouch/20.jpg", "assets/projects/freestyle-retouch/21.jpg",
+      "assets/projects/freestyle-retouch/22.jpg", "assets/projects/freestyle-retouch/23.jpg", "assets/projects/freestyle-retouch/24.jpg",
+      "assets/projects/freestyle-retouch/25.jpg"
+    ] },
+  { name:"Freestyle Work", kind:"AI", year:"", note:"",
+    images:[
+      "assets/projects/freestyle-work/01.jpg", "assets/projects/freestyle-work/02.jpg", "assets/projects/freestyle-work/03.jpg",
+      "assets/projects/freestyle-work/04.jpg", "assets/projects/freestyle-work/05.jpg", "assets/projects/freestyle-work/06.jpg",
+      "assets/projects/freestyle-work/07.jpg", "assets/projects/freestyle-work/08.jpg", "assets/projects/freestyle-work/09.jpg",
+      "assets/projects/freestyle-work/10.jpg", "assets/projects/freestyle-work/11.jpg"
+    ] }
 ];
 
 (function () {
@@ -546,6 +589,12 @@ var PROJECTS = [
     b.className = 'index__item';
     b.type = 'button';
     b.textContent = p.name;
+    if (p.kind) {
+      var k = document.createElement('span');
+      k.className = 'index__kind';
+      k.textContent = p.kind;
+      b.appendChild(k);
+    }
     b.setAttribute('aria-current', i === 0 ? 'true' : 'false');
     b.addEventListener('click', function () {
       document.getElementById(id).scrollIntoView({ behavior:'smooth', block:'start' });
@@ -579,8 +628,8 @@ var PROJECTS = [
     slide.innerHTML =
       '<div class="slide__head mono">' +
         '<span class="slide__num">' + pad(i + 1) + '</span>' +
-        (p.year ? '<span>' + esc(p.year) + '</span>' : '') +
-        '<span class="slide__kind">' + esc(p.kind || '') + '</span>' +
+        (p.kind ? '<span class="slide__kind">' + esc(p.kind) + '</span>' : '') +
+        (p.year ? '<span class="slide__year">' + esc(p.year) + '</span>' : '') +
       '</div>' +
       '<h2 class="slide__title">' + esc(p.name) + '</h2>' +
       '<div class="strip' + (total ? '' : ' strip--empty') +
@@ -608,22 +657,38 @@ var PROJECTS = [
     var next  = slide.querySelector('[data-dir="1"]');
     var shots = strip.querySelectorAll('.shot');
 
-    function step() {
-      var s = shots[0];
-      return s ? s.getBoundingClientRect().width + 9 : strip.clientWidth;
+    /* shots differ in width, so navigation works shot-by-shot on their
+       real offsets rather than on a fixed step */
+    function atEnd() {
+      return strip.scrollLeft >= strip.scrollWidth - strip.clientWidth - 8;
     }
     function current() {
-      return Math.round(strip.scrollLeft / step());
+      if (atEnd()) return shots.length - 1;
+      var x = strip.scrollLeft, best = 0, bestDist = Infinity;
+      for (var k = 0; k < shots.length; k++) {
+        var d = Math.abs(shots[k].offsetLeft - x);
+        if (d < bestDist) { bestDist = d; best = k; }
+      }
+      return best;
     }
     function sync() {
-      var i = Math.min(current(), shots.length - 1);
-      count.textContent = pad(i + 1);
+      count.textContent = pad(current() + 1);
       prev.disabled = strip.scrollLeft < 8;
-      next.disabled = strip.scrollLeft >= strip.scrollWidth - strip.clientWidth - 8;
+      next.disabled = atEnd();
     }
     function go(dir) {
-      strip.scrollBy({ left: dir * step(), behavior:'smooth' });
+      var k = Math.max(0, Math.min(shots.length - 1, current() + dir));
+      strip.scrollTo({ left: shots[k].offsetLeft, behavior:'smooth' });
     }
+
+    /* swap the 3:4 placeholder for the photo's true proportions */
+    Array.prototype.forEach.call(strip.querySelectorAll('img'), function (img) {
+      function fit() {
+        if (img.naturalWidth) img.parentNode.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
+        sync();
+      }
+      if (img.complete) fit(); else img.addEventListener('load', fit);
+    });
 
     prev.addEventListener('click', function () { go(-1); });
     next.addEventListener('click', function () { go(1); });
