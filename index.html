@@ -348,13 +348,12 @@ body::after {
 }
 .strip::-webkit-scrollbar { display:none; }
 .strip--empty { cursor:default; }
-/* while panning by hand, snapping and smooth scrolling fight the input */
-.strip.is-dragging,
-.strip.no-snap {
+/* while dragging, snapping and smooth scrolling fight the pointer */
+.strip.is-dragging {
+  cursor:grabbing;
   scroll-snap-type:none;
   scroll-behavior:auto;
 }
-.strip.is-dragging { cursor:grabbing; }
 .shot img { -webkit-user-drag:none; user-select:none; }
 .slide.is-active .strip { opacity:1; transform:none; }
 
@@ -746,39 +745,21 @@ var PROJECTS = [
     strip.addEventListener('pointercancel', endDrag);
     strip.addEventListener('dragstart', function (e) { e.preventDefault(); });
 
-    /* A plain mouse wheel has no horizontal axis, so over the gallery it moves
-       through the photos. Once they run out it carries on to the next project,
-       otherwise the gallery would trap the wheel — it covers most of the rail. */
-    var snapBack = null, railLock = 0;
+    /* The wheel always changes project — photos are moved by dragging only.
+       Without this the gallery eats the wheel: it scrolls horizontally, so the
+       browser treats it as a vertical scroller with no range and stops there
+       instead of passing the gesture to the rail underneath. */
+    var railLock = 0;
     strip.addEventListener('wheel', function (e) {
       if (e.ctrlKey) return;                                 /* leave zoom alone */
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;  /* trackpad swipe: native */
-
-      var dir = e.deltaY > 0 ? 1 : -1;
-      var room = dir > 0
-        ? strip.scrollWidth - strip.clientWidth - strip.scrollLeft
-        : strip.scrollLeft;
-
-      if (room > 2) {
-        e.preventDefault();
-        strip.classList.add('no-snap');
-        strip.scrollLeft += e.deltaY;
-        sync();
-        window.clearTimeout(snapBack);
-        snapBack = window.setTimeout(function () {
-          strip.classList.remove('no-snap');   /* settles on the nearest photo */
-          sync();
-        }, 140);
-        return;
-      }
-
       if (rail.scrollHeight <= rail.clientHeight + 4) return; /* phone: page scrolls */
       e.preventDefault();
       var now = Date.now();
       if (now < railLock) return;
       railLock = now + 600;
       var page = Math.max(0, Math.min(slides.length - 1,
-        Math.round(rail.scrollTop / rail.clientHeight) + dir));
+        Math.round(rail.scrollTop / rail.clientHeight) + (e.deltaY > 0 ? 1 : -1)));
       rail.scrollTo({ top: page * rail.clientHeight, behavior:'smooth' });
     }, { passive:false });
 
