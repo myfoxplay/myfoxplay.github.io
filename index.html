@@ -340,11 +340,22 @@ body::after {
   scroll-snap-type:x mandatory;
   scroll-behavior:smooth;
   scrollbar-width:none;
+  cursor:grab;
+  user-select:none;
   opacity:0;
   transform:translateY(22px);
   transition:opacity .65s var(--ease) .08s, transform .65s var(--ease) .08s;
 }
 .strip::-webkit-scrollbar { display:none; }
+.strip--empty { cursor:default; }
+/* while panning by hand, snapping and smooth scrolling fight the input */
+.strip.is-dragging,
+.strip.no-snap {
+  scroll-snap-type:none;
+  scroll-behavior:auto;
+}
+.strip.is-dragging { cursor:grabbing; }
+.shot img { -webkit-user-drag:none; user-select:none; }
 .slide.is-active .strip { opacity:1; transform:none; }
 
 /* each shot is full strip height at the photo's own proportions — never
@@ -700,6 +711,76 @@ var PROJECTS = [
       if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
       if (e.key === 'ArrowLeft')  { e.preventDefault(); go(-1); }
     });
+
+    /* drag to pan with a mouse — a touch screen already pans on its own,
+       and the wheel is left alone so it keeps scrolling the rail */
+    var dragging = false, startX = 0, startLeft = 0, moved = false;
+
+    strip.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0 || shots.length < 2) return;
+      e.preventDefault();      /* stops the native text/image drag-select */
+      strip.focus();           /* preventDefault would otherwise skip focus */
+      dragging = true; moved = false;
+      startX = e.clientX;
+      startLeft = strip.scrollLeft;
+      strip.classList.add('is-dragging');
+      strip.setPointerCapture(e.pointerId);
+    });
+    strip.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - startX;
+      if (!moved && Math.abs(dx) < 4) return;   /* ignore a shaky click */
+      moved = true;
+      e.preventDefault();
+      strip.scrollLeft = startLeft - dx;
+      sync();
+    });
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      strip.classList.remove('is-dragging');   /* snapping resumes here */
+      try { strip.releasePointerCapture(e.pointerId); } catch (err) {}
+      sync();
+    }
+    strip.addEventListener('pointerup', endDrag);
+    strip.addEventListener('pointercancel', endDrag);
+    strip.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
+    /* A plain mouse wheel has no horizontal axis, so over the gallery it moves
+       through the photos. Once they run out it carries on to the next project,
+       otherwise the gallery would trap the wheel — it covers most of the rail. */
+    var snapBack = null, railLock = 0;
+    strip.addEventListener('wheel', function (e) {
+      if (e.ctrlKey) return;                                 /* leave zoom alone */
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;  /* trackpad swipe: native */
+
+      var dir = e.deltaY > 0 ? 1 : -1;
+      var room = dir > 0
+        ? strip.scrollWidth - strip.clientWidth - strip.scrollLeft
+        : strip.scrollLeft;
+
+      if (room > 2) {
+        e.preventDefault();
+        strip.classList.add('no-snap');
+        strip.scrollLeft += e.deltaY;
+        sync();
+        window.clearTimeout(snapBack);
+        snapBack = window.setTimeout(function () {
+          strip.classList.remove('no-snap');   /* settles on the nearest photo */
+          sync();
+        }, 140);
+        return;
+      }
+
+      if (rail.scrollHeight <= rail.clientHeight + 4) return; /* phone: page scrolls */
+      e.preventDefault();
+      var now = Date.now();
+      if (now < railLock) return;
+      railLock = now + 600;
+      var page = Math.max(0, Math.min(slides.length - 1,
+        Math.round(rail.scrollTop / rail.clientHeight) + dir));
+      rail.scrollTo({ top: page * rail.clientHeight, behavior:'smooth' });
+    }, { passive:false });
 
     sync();
   });
